@@ -30,7 +30,7 @@ void set_OF_add(uint32_t result, uint32_t src, uint32_t dest, size_t data_size)
 	result = sign_ext(result & (0xffffffff >> (32 - data_size)), data_size);
 	src = sign_ext(src & (0xffffffff >> (32 - data_size)), data_size);
 	dest = sign_ext(dest & (0xffffffff >> (32 - data_size)), data_size);
-	return sign(src) == sign(dest) && sign(result) != sign(src);
+	cpu.eflags.OF = sign(src) == sign(dest) && sign(result) != sign(src);
 }
 
 uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size)
