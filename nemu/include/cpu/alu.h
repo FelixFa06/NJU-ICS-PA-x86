@@ -15,6 +15,9 @@ void set_SF(uint32_t result, size_t data_size);
 // set CF
 void set_CF_add(uint32_t result, uint32_t src, uint32_t cf, size_t data_size);
 void set_CF_sub(uint32_t dest, uint32_t src, uint32_t cf, size_t data_size);
+void set_CF_sal(uint32_t src, uint32_t dest, size_t data_size);
+void set_CF_sar(uint32_t src, uint32_t dest, size_t data_size);
+void set_CF_shr(uint32_t src, uint32_t dest, size_t data_size);
 // set OF
 void set_OF_add(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
 void set_OF_sub(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
