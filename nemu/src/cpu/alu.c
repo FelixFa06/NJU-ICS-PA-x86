@@ -165,7 +165,7 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size)
 	int64_t res = src64 * dest64;
 	int32_t sign = sign_64(src64) ^ sign_64(dest64);
 	set_CFOF_imul(res, sign, data_size);
-	return res & (0xffffffffffffffff >> (64 - data_size * 2));
+	return res;
 #endif
 }
 
