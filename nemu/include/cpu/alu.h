@@ -21,6 +21,9 @@ void set_CF_shr(uint32_t src, uint32_t dest, size_t data_size);
 // set OF
 void set_OF_add(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
 void set_OF_sub(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
+// set CF&OF
+void set_CFOF_mul(uint64_t result, size_t data_size);
+void set_CFOF_imul(int64_t result, int32_t sign, size_t data_size);
 
 // dest + src
 uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size);
@@ -55,6 +58,7 @@ int32_t alu_imod(int64_t src, int64_t dest);
 
 // sign extend
 #define sign(x) ((uint32_t)(x) >> 31)
+#define sign_64(x) ((uint64_t)(x) >> 63)
 // #define sign_ext(x) ((int32_t)((int8_t)(x)))
 
 inline uint32_t sign_ext(uint32_t x, size_t data_size)

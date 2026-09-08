@@ -66,6 +66,20 @@ void set_OF_sub(uint32_t result, uint32_t src, uint32_t dest, size_t data_size)
 	cpu.eflags.OF = sign(dest) != sign(src) && sign(result) != sign(dest);
 }
 
+void set_CFOF_mul(uint64_t result, size_t data_size)
+{
+	result >>= data_size;
+	cpu.eflags.CF = cpu.eflags.OF = !!(result & (0xffffffff >> (32 - data_size)));
+}
+
+void set_CFOF_imul(int64_t result, int32_t sign, size_t data_size)
+{
+	result >>= data_size;
+	if (sign == 1)
+		result ^= 0xffffffff >> (32 - data_size);
+	cpu.eflags.CF = cpu.eflags.OF = !!(result & (0xffffffff >> (32 - data_size)));
+}
+
 uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size)
 {
 #ifdef NEMU_REF_ALU
@@ -133,10 +147,11 @@ uint64_t alu_mul(uint32_t src, uint32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mul(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	uint64_t src64 = src & (0xffffffff >> (32 - data_size));
+	uint64_t dest64 = dest & (0xffffffff >> (32 - data_size));
+	uint64_t res = src64 * dest64;
+	set_CFOF_mul(res, data_size);
+	return res & (0xffffffffffffffff >> (64 - data_size * 2));
 #endif
 }
 
@@ -145,10 +160,12 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_imul(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	int64_t src64 = sign_ext_64(src & (0xffffffff >> (32 - data_size)), data_size);
+	int64_t dest64 = sign_ext_64(dest & (0xffffffff >> (32 - data_size)), data_size);
+	int64_t res = src64 * dest64;
+	int32_t sign = sign_64(src64) ^ sign_64(dest64);
+	set_CFOF_imul(res, sign, data_size);
+	return res & (0xffffffffffffffff >> (64 - data_size * 2));
 #endif
 }
 
@@ -158,10 +175,12 @@ uint32_t alu_div(uint64_t src, uint64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_div(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	if (src == 0)
+	{
+		printf("Floating Point Exception"), fflush(stdout);
+		assert(0);
+	}
+	return (uint32_t)(dest / src) & (0xffffffff >> (32 - data_size));
 #endif
 }
 
@@ -171,10 +190,12 @@ int32_t alu_idiv(int64_t src, int64_t dest, size_t data_size)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_idiv(src, dest, data_size);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	if (src == 0)
+	{
+		printf("Floating Point Exception"), fflush(stdout);
+		assert(0);
+	}
+	return (int32_t)(dest / src) & (0xffffffff >> (32 - data_size));
 #endif
 }
 
@@ -183,10 +204,12 @@ uint32_t alu_mod(uint64_t src, uint64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_mod(src, dest);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	if (src == 0)
+	{
+		printf("Floating Point Exception"), fflush(stdout);
+		assert(0);
+	}
+	return (uint32_t)(dest % src);
 #endif
 }
 
@@ -195,10 +218,12 @@ int32_t alu_imod(int64_t src, int64_t dest)
 #ifdef NEMU_REF_ALU
 	return __ref_alu_imod(src, dest);
 #else
-	printf("\e[0;31mPlease implement me at alu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
-	return 0;
+	if (src == 0)
+	{
+		printf("Floating Point Exception"), fflush(stdout);
+		assert(0);
+	}
+	return (int32_t)(dest % src);
 #endif
 }
 
