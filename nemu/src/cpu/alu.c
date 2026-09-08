@@ -88,7 +88,7 @@ uint32_t alu_sub(uint32_t src, uint32_t dest, size_t data_size)
 	set_PF(res);
 	set_ZF(res, data_size);
 	set_SF(res, data_size);
-	set_CF_sub(res, src, (uint32_t)0, data_size);
+	set_CF_sub(dest, src, (uint32_t)0, data_size);
 	set_OF_sub(res, src, dest, data_size);
 	return res & (0xFFFFFFFF >> (32 - data_size));
 #endif
@@ -100,7 +100,7 @@ uint32_t alu_sbb(uint32_t src, uint32_t dest, size_t data_size)
 	return __ref_alu_sbb(src, dest, data_size);
 #else
 	uint32_t cf = cpu.eflags.CF;
-	uint32_t res = dest - src;
+	uint32_t res = dest - src - cf;
 	set_PF(res);
 	set_ZF(res, data_size);
 	set_SF(res, data_size);
