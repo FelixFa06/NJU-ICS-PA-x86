@@ -6,6 +6,17 @@
 // enable NEMU_REF_ALU to use reference implementation
 // #define NEMU_REF_ALU
 
+// set CF
+void set_CF_add(uint32_t result, uint32_t src, size_t data_size);
+// set PF
+void set_PF(uint32_t result);
+// set ZF
+void set_ZF(uint32_t result, size_t data_size);
+// set SF
+void set_SF(uint32_t result, size_t data_size);
+// set OF
+void set_OF_add(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
+
 // dest + src
 uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size);
 // dest + src + CF
@@ -33,13 +44,13 @@ int64_t alu_imul(int32_t src, int32_t dest, size_t data_size);
 // dest / src
 uint32_t alu_div(uint64_t src, uint64_t dest, size_t data_size);
 int32_t alu_idiv(int64_t src, int64_t dest, size_t data_size);
-//uint32_t alu_mod(uint32_t src, uint32_t dest);
+// uint32_t alu_mod(uint32_t src, uint32_t dest);
 uint32_t alu_mod(uint64_t src, uint64_t dest);
 int32_t alu_imod(int64_t src, int64_t dest);
 
 // sign extend
 #define sign(x) ((uint32_t)(x) >> 31)
-//#define sign_ext(x) ((int32_t)((int8_t)(x)))
+// #define sign_ext(x) ((int32_t)((int8_t)(x)))
 
 inline uint32_t sign_ext(uint32_t x, size_t data_size)
 {
