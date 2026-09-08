@@ -6,16 +6,18 @@
 // enable NEMU_REF_ALU to use reference implementation
 // #define NEMU_REF_ALU
 
-// set CF
-void set_CF_add(uint32_t result, uint32_t src, size_t data_size);
 // set PF
 void set_PF(uint32_t result);
 // set ZF
 void set_ZF(uint32_t result, size_t data_size);
 // set SF
 void set_SF(uint32_t result, size_t data_size);
+// set CF
+void set_CF_add(uint32_t result, uint32_t src, uint32_t cf, size_t data_size);
+void set_CF_sub(uint32_t dest, uint32_t src, uint32_t cf, size_t data_size);
 // set OF
 void set_OF_add(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
+void set_OF_sub(uint32_t result, uint32_t src, uint32_t dest, size_t data_size);
 
 // dest + src
 uint32_t alu_add(uint32_t src, uint32_t dest, size_t data_size);
