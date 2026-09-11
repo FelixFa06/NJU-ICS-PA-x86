@@ -242,8 +242,7 @@ CORNER_CASE_RULE corner_mul[] = {
 // a * b
 uint32_t internal_float_mul(uint32_t b, uint32_t a)
 {
-	int i = 0;
-	for (; i < sizeof(corner_mul) / sizeof(CORNER_CASE_RULE); i++)
+	for (int i = 0; i < sizeof(corner_mul) / sizeof(CORNER_CASE_RULE); i++)
 	{
 		if (a == corner_mul[i].a && b == corner_mul[i].b)
 			return corner_mul[i].res;
@@ -283,9 +282,8 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 	uint32_t exp_res = 0;
 
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
+	exp_res = fa.exponent + fb.exponent - 127 - 3;
+	sig_res <<= 3;
 	return internal_normalize(f.sign, exp_res, sig_res);
 }
 
@@ -306,9 +304,7 @@ CORNER_CASE_RULE corner_div[] = {
 // a / b
 uint32_t internal_float_div(uint32_t b, uint32_t a)
 {
-
-	int i = 0;
-	for (; i < sizeof(corner_div) / sizeof(CORNER_CASE_RULE); i++)
+	for (int i = 0; i < sizeof(corner_div) / sizeof(CORNER_CASE_RULE); i++)
 	{
 		if (a == corner_div[i].a && b == corner_div[i].b)
 			return corner_div[i].res;
