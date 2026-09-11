@@ -85,9 +85,9 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 			sig_grs = 0;
 			overflow = 1;
 		}
-		if (!overflow)
-			sig_grs ^= (1 << 24);
 	}
+
+	sig_grs &= 0x7fffff;
 
 	FLOAT f;
 	f.sign = sign;
