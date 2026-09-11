@@ -1,7 +1,6 @@
 #include "nemu.h"
 #include "cpu/fpu.h"
 
-
 // special values
 FLOAT p_zero, n_zero, p_inf, n_inf, p_nan, n_nan;
 
@@ -18,38 +17,30 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		while ((((sig_grs >> (23 + 3)) > 1) && exp < 0xff) // condition 1
 			   ||										   // or
 			   (sig_grs > 0x04 && exp < 0)				   // condition 2
-			   )
+		)
 		{
-
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sig_grs = (sig_grs >> 1) | (sig_grs & 1); // sticker
+			exp++;
 		}
 
 		if (exp >= 0xff)
 		{
-			/* TODO: assign the number to infinity */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			/*TODO: set infinity*/
+			exp = 0xff;
+			sig_grs = 0;
 			overflow = true;
 		}
 		if (exp == 0)
 		{
-			// we have a denormal here, the exponent is 0, but means 2^-126,
-			// as a result, the significand should shift right once more
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sig_grs = (sig_grs >> 1) | (sig_grs & 1); // sticker
 		}
 		if (exp < 0)
 		{
 			/* TODO: assign the number to zero */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			exp = 0;
+			sig_grs = 0;
 			overflow = true;
 		}
 	}
@@ -59,17 +50,14 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 		while (((sig_grs >> (23 + 3)) == 0) && exp > 0)
 		{
 			/* TODO: shift left */
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sig_grs <<= 1;
+			exp--;
 		}
 		if (exp == 0)
 		{
 			// denormal
 			/* TODO: shift right, pay attention to sticky bit*/
-			printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-			fflush(stdout);
-			assert(0);
+			sig_grs = (sig_grs >> 1) | (sig_grs & 1); // sticker
 		}
 	}
 	else if (exp == 0 && sig_grs >> (23 + 3) == 1)
@@ -81,9 +69,24 @@ inline uint32_t internal_normalize(uint32_t sign, int32_t exp, uint64_t sig_grs)
 	if (!overflow)
 	{
 		/* TODO: round up and remove the GRS bits */
-		printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-		fflush(stdout);
-		assert(0);
+		uint32_t grs = sig_grs & 0x7;
+		sig_grs >>= 3;
+		if (grs > 4 || (grs == 4 && (sig_grs & 1)))
+			sig_grs++;
+		while (sig_grs >> 23 > 1)
+		{
+			if (exp > 0)
+				sig_grs >>= 1;
+			exp++;
+		}
+		if (exp >= 0xff)
+		{
+			exp = 0xff;
+			sig_grs = 0;
+			overflow = 1;
+		}
+		if (!overflow)
+			sig_grs ^= (1 << 24);
 	}
 
 	FLOAT f;
@@ -110,10 +113,8 @@ CORNER_CASE_RULE corner_add[] = {
 // a + b
 uint32_t internal_float_add(uint32_t b, uint32_t a)
 {
-
 	// corner cases
-	int i = 0;
-	for (; i < sizeof(corner_add) / sizeof(CORNER_CASE_RULE); i++)
+	for (int i = 0; i < sizeof(corner_add) / sizeof(CORNER_CASE_RULE); i++)
 	{
 		if (a == corner_add[i].a && b == corner_add[i].b)
 			return corner_add[i].res;
@@ -155,12 +156,7 @@ uint32_t internal_float_add(uint32_t b, uint32_t a)
 		sig_b |= 0x800000; // the hidden 1
 
 	// alignment shift for fa
-	uint32_t shift = 0;
-
-	/* TODO: shift = ? */
-	printf("\e[0;31mPlease implement me at fpu.c\e[0m\n");
-	fflush(stdout);
-	assert(0);
+	uint32_t shift = (fb.exponent == 0 ? 1 : fb.exponent) - (fa.exponent == 0 ? 1 : fa.exponent);
 	assert(shift >= 0);
 
 	sig_a = (sig_a << 3); // guard, round, sticky
@@ -494,20 +490,20 @@ void fpu_cmp(uint32_t idx)
 	if (*a > *b)
 	{
 		fpu.status.c0 = fpu.status.c2 = fpu.status.c3 = 0;
-		//printf("f %f > %f\n", *a, *b);
-		//printf("f %x > %x\n", *((uint32_t *)a), *((uint32_t *)b));
+		// printf("f %f > %f\n", *a, *b);
+		// printf("f %x > %x\n", *((uint32_t *)a), *((uint32_t *)b));
 	}
 	else if (*a < *b)
 	{
 		fpu.status.c0 = 1;
 		fpu.status.c2 = fpu.status.c3 = 0;
-		//printf("f %f < %f\n", *a, *b);
+		// printf("f %f < %f\n", *a, *b);
 	}
 	else
 	{
 		fpu.status.c0 = fpu.status.c2 = 0;
 		fpu.status.c3 = 1;
-		//printf("f %f == %f\n", *a, *b);
+		// printf("f %f == %f\n", *a, *b);
 	}
 }
 
