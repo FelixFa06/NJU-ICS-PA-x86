@@ -212,8 +212,7 @@ CORNER_CASE_RULE corner_sub[] = {
 uint32_t internal_float_sub(uint32_t b, uint32_t a)
 {
 	// change the sign of b
-	int i = 0;
-	for (; i < sizeof(corner_sub) / sizeof(CORNER_CASE_RULE); i++)
+	for (int i = 0; i < sizeof(corner_sub) / sizeof(CORNER_CASE_RULE); i++)
 	{
 		if (a == corner_sub[i].a && b == corner_sub[i].b)
 			return corner_sub[i].res;
@@ -282,7 +281,7 @@ uint32_t internal_float_mul(uint32_t b, uint32_t a)
 	uint32_t exp_res = 0;
 
 	/* TODO: exp_res = ? leave space for GRS bits. */
-	exp_res = fa.exponent + fb.exponent + 127 - 3;
+	exp_res = fa.exponent + fb.exponent + 127;
 	sig_res <<= 3;
 	return internal_normalize(f.sign, exp_res, sig_res);
 }
