@@ -21,13 +21,13 @@ instr_func opcode_entry[256] = {
     /* 0x44 - 0x47*/ inv, inv, inv, inv,
     /* 0x48 - 0x4b*/ inv, inv, inv, inv,
     /* 0x4c - 0x4f*/ inv, inv, inv, inv,
-    /* 0x50 - 0x53*/ inv, inv, inv, inv,
-    /* 0x54 - 0x57*/ inv, inv, inv, inv,
+    /* 0x50 - 0x53*/ push_r_v, push_r_v, push_r_v, push_r_v,
+    /* 0x54 - 0x57*/ push_r_v, push_r_v, push_r_v, push_r_v,
     /* 0x58 - 0x5b*/ inv, inv, inv, inv,
     /* 0x5c - 0x5f*/ inv, inv, inv, inv,
     /* 0x60 - 0x63*/ inv, inv, inv, inv,
     /* 0x64 - 0x67*/ inv, inv, data_size_16, inv,
-    /* 0x68 - 0x6b*/ inv, inv, inv, inv,
+    /* 0x68 - 0x6b*/ push_i_v, inv, push_i_b, inv,
     /* 0x6c - 0x6f*/ inv, inv, inv, inv,
     /* 0x70 - 0x73*/ inv, inv, inv, inv,
     /* 0x74 - 0x77*/ inv, inv, inv, inv,
@@ -113,7 +113,7 @@ instr_func group_3_v_entry[8] =
 
 /* 0xff */
 instr_func group_5_indirect_entry[8] =
-    {inv, inv, inv, inv, inv, inv, inv, inv};
+    {inv, inv, inv, inv, inv, inv, push_rm_v, inv};
 
 instr_func group_7_entry[8] =
     {inv, inv, inv, inv, inv, inv, inv, inv};
