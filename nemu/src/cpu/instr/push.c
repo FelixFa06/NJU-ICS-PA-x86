@@ -12,7 +12,7 @@ static void instr_execute_1op()
             opr_src.val = opr_src.val & 0xffff;
     }
     cpu.esp = cpu.esp - data_size / 8;
-    vaddr_write(cpu.esp, SREG_SS, data_size, opr_src.val);
+    vaddr_write(cpu.esp, SREG_SS, data_size / 8, opr_src.val);
 }
 
 make_instr_impl_1op(push, r, v)
