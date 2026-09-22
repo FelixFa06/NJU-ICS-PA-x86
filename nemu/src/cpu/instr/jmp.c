@@ -1,6 +1,6 @@
 #include "cpu/instr.h"
 
-make_instr_func(jmp_near)
+make_instr_func(jmp_near_rel)
 {
         OPERAND rel;
         rel.type = OPR_IMM;
@@ -19,7 +19,7 @@ make_instr_func(jmp_near)
         return 1 + data_size / 8;
 }
 
-make_instr_func(jmp_short)
+make_instr_func(jmp_short_)
 {
         OPERAND rel;
         rel.type = OPR_IMM;
@@ -37,7 +37,7 @@ make_instr_func(jmp_short)
         return 1 + rel.data_size / 8;
 }
 
-make_instr_func(jmp_rm)
+make_instr_func(jmp_near_rm)
 {
         OPERAND rm;
         int len = 1;

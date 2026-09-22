@@ -3,5 +3,7 @@
 /*
 Put the declarations of `call' instructions here.
 */
+make_instr_func(call_near_rel);
+make_instr_func(call_near_rm);
 
 #endif
