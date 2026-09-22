@@ -2,7 +2,7 @@
 /*
 Put the implementations of `call' instructions here.
 */
-make_instr_func(call_near_rel)
+make_instr_func(call_near)
 {
     vaddr_write(cpu.esp, SREG_SS, 4, cpu.eip & (0xffffffff >> (32 - data_size)));
     cpu.esp -= 4;
@@ -21,7 +21,7 @@ make_instr_func(call_near_rel)
 
     return 1 + data_size / 8;
 }
-make_instr_func(call_near_rm)
+make_instr_func(call_near_indirect)
 {
     vaddr_write(cpu.esp, SREG_SS, 4, cpu.eip & (0xffffffff >> (32 - data_size)));
     cpu.esp -= 4;
